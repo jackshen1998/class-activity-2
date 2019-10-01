@@ -17,7 +17,7 @@ D2 <- filter(D1, schoolyear == 20112012)
 ```{r}
 #Generate a histogramof the percentage of free/reduced lunch students (frl_percent) at each school
 
-hist()
+
 
 #Change the number of breaks to 100, do you get the same impression?
 
@@ -80,14 +80,20 @@ pairs(D5)
 #pmax sets a maximum value, pmin sets a minimum value
 #round rounds numbers to whole number values
 #sample draws a random samples from the groups vector according to a uniform distribution
-
-
+student_id = seq(1,100, by=1)
+student_score=rnorm(100,75,15)
+student_score<-ifelse(student_score >= 100, 100,student_score)
+student_score = round(student_score)
+ df <- data.frame(student_id,student_score)
+ interest = sample(c("sport","music","nature","literature"), 100, replace=TRUE)
+ df = data.frame(df,interest)
+ 
 ```
 
 2. Using base R commands, draw a histogram of the scores. Change the breaks in your histogram until you think they best represent your data.
 
 ```{r}
-
+hist(df$student_score,breaks = c(0,70,80,90,100))
 ```
 
 
@@ -95,7 +101,11 @@ pairs(D5)
 
 ```{r}
 #cut() divides the range of scores into intervals and codes the values in scores according to which interval they fall. We use a vector called `letters` as the labels, `letters` is a vector made up of the letters of the alphabet.
-
+sc<-c(0,70,80,90,100)
+letters<-c("F","C","B","A")
+grade<-table(cut(student_score,sc,letters))
+grade_student<-cut(student_score,sc,letters,order_result=TRUE)
+df<-data.frame(df,grade_student)
 ```
 
 4. Now using the colorbrewer package (RColorBrewer; http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3) design a pallette and assign it to the groups in your data on the histogram.
@@ -106,30 +116,30 @@ library(RColorBrewer)
 
 #The top section of palettes are sequential, the middle section are qualitative, and the lower section are diverging.
 #Make RColorBrewer palette available to R and assign to your bins
-
+color<-palette(brewer.pal(4,"Oranges"))
 #Use named palette in histogram
-
+hist(df$student_score,breaks = c(0,70,80,90,100),col=color)
 ```
-
-
 5. Create a boxplot that visualizes the scores for each interest group and color each interest group a different color.
 
 ```{r}
 #Make a vector of the colors from RColorBrewer
-
+box<-brewer.pal(8,"Paired")
+boxplot(df$student_score~df$interest, col = box)
 ```
 
 
 6. Now simulate a new variable that describes the number of logins that students made to the educational game. They should vary from 1-25.
 
 ```{r}
-
+log_in<-sample(1:25,100,replace = TRUE)
+df2<-cbind(df,log_in)
 ```
 
 7. Plot the relationships between logins and scores. Give the plot a title and color the dots according to interest group.
 
 ```{r}
-
+plot(df2$log_in,df2$student_score,type = "p",main = "Score",col = df2$interest)
 
 ```
 
@@ -137,14 +147,15 @@ library(RColorBrewer)
 8. R contains several inbuilt data sets, one of these in called AirPassengers. Plot a line graph of the the airline passengers over time using this data set.
 
 ```{r}
-
+plot(AirPassengers)
 ```
 
 
 9. Using another inbuilt data set, iris, plot the relationships between all of the variables in the data set. Which of these relationships is it appropraiet to run a correlation on? 
 
 ```{r}
-
+pairs(iris)
+#petallength and petalwidth & sepallength and petallength have correlation
 ```
 
 10. Finally use the knitr function to generate an html document from your work. If you have time, try to change some of the output using different commands from the RMarkdown cheat sheet.
